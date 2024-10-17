@@ -1,0 +1,31 @@
+package edu.kh.jdbc;
+
+import java.util.Scanner;
+
+public class JDBCExample2 {
+	public static void main(String[] args) {
+
+		//입력 받은 급여보다 초과해서 받는 사원의 
+		// 사번 , 이름 ,급여 조회 
+		
+		//1. jdbc 객체 참조용 변수 선언
+		
+		//2. DriverManger 객체를 이용해서 Connection 객체 생성 
+		
+		//2-1 oraccle jdbc driver 객체 메모리 로드 
+		
+		//2-2 db 연결 정보 작성 
+		
+		//2-3 db 연결 정보와 drivermanager 를 이용해서 connection 객체 생성 
+		
+		
+		//3. sql 작성 
+		//입력받은 급여 ->scanner 필요 
+		// int input =sc.nextInt()  - 급여 담기 
+		
+		Scanner sc = new Scanner();
+	
+	
+	
+	}
+}

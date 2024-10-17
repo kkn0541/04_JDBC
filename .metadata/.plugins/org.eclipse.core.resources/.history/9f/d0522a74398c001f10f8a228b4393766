@@ -1,0 +1,13 @@
+package edu.kh.jdbc;
+
+
+//ctrl + f11 실행
+public class JDBCExample1 {
+
+	public static void main(String[] args) {
+
+		
+		
+	}
+
+}
