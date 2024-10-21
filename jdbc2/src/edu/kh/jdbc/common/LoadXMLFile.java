@@ -25,7 +25,9 @@ public class LoadXMLFile {
 			//Property :속성 (데이터 )
 			//prop.getProperty("key") : key가 일치하는 속성 값을 얻어옴 
 			String driver =prop.getProperty("driver");
+				
 			
+						
 			String url = prop.getProperty("url");
 			
 			String userName =prop.getProperty("userName");

@@ -69,7 +69,7 @@ public class JDBCExample7 {
 //			
 
 			String sql = """
-					SELECT EMP_ID ,EMP_NAME ,DECODE(SUBSTR(EMP_NO,8,1),'1','F','2','M')GENDER ,
+					SELECT EMP_ID ,EMP_NAME ,DECODE(SUBSTR(EMP_NO,8,1),'1','M','2','F')GENDER ,
 					SALARY,JOB_NAME,NVL(DEPT_TITLE,'없음')DEPT_TITLE
 					FROM EMPLOYEE
 					JOIN JOB USING(JOB_CODE)
