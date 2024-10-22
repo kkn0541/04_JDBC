@@ -85,8 +85,8 @@ public class UserService {
 
 		// 2. 데이터 가공 (없으면 넘어감)
 
-		// 3. DAO 메서드 호출(select) 후 결과 반환(List<User>받기 
-		//dao 에  conn 전달
+		// 3. DAO 메서드 호출(select) 후 결과 반환(List<User>받기
+		// dao 에 conn 전달
 		List<User> userList = dao.selectAll(conn);
 
 		// 4. DML 인경우 트랜잭션 처리
@@ -94,30 +94,188 @@ public class UserService {
 
 		// 5. 다쓴 connection 반환
 		close(conn);
-		
+
 		// 6. 결과 반환
 		return userList;
 	}
 
-	public List<User> selectName(String input) throws Exception {
+	/**
+	 * 3.user 중 이름에 검색어가 포함된 회원 조회 서비스
+	 * 
+	 * @param keyword :입력한 키워드
+	 * @return searchList (조회된 회원 리스트)
+	 * @throws Exception
+	 */
+	public List<User> selectName(String keyword) throws Exception {
 		// TODO Auto-generated method stub
+		// 1 커넥션 생성 static 메서드 import 했으니 getConnection만해도된다 (static인애들은 기울임채 )
 		Connection conn = getConnection();
-		List<User> searchList =dao.selectName(conn,input);
-		
+
+		// 2 데이터가공(없으면 패스)
+
+		// 3. DAO 메서드 호출 후 결과 반환받기
+		List<User> searchList = dao.selectName(conn, keyword);
+
+		// 4. DML인 경우 트랜잭션 처리(SELECT 패스)
+
+		// 5. 커넥션 반환
 		close(conn);
-		
+
+		// 결과 반환
 		return searchList;
 	}
 
+	/**
+	 * 4. USER_NO를 입력 받아 일치하는 User 조회(SELECT)
+	 * 
+	 * @param input 입력한 사용자 번호
+	 * @return User( 조회된 회원 정보 객체 또는 null )
+	 * @throws Exception
+	 */
 	public User selectUser(int input) throws Exception {
-
+		// 1 커넥션 생성
 		Connection conn = getConnection();
-		User user = dao.selectUser(conn,input);
-		
+
+		// 2. DAO 메서드 호출 후 결과 반환받기
+		User user = dao.selectUser(conn, input);
+
+		//// 5. 커넥션 반환
 		close(conn);
-		
-		
+
+		// 결과 반환
 		return user;
 	}
 
+	/**
+	 * 5. USER_NO를 입력 받아 일치하는 User 삭제 service(DELETE)")
+	 * 
+	 * @param input
+	 * @return result - 행의 개수
+	 * @throws Exception
+	 */
+	public int deleteUser(int input) throws Exception {
+		Connection conn = getConnection();
+
+		int result = dao.deleteUser(conn, input);
+
+		close(conn);
+
+		// 결과에 따라 트랜잭션 제어 처리
+
+		if (result > 0) { // delete 성공
+			commit(conn);
+
+		} else { // delete 실패
+			rollback(conn);
+		}
+
+		// 5. CONNECTION 반환하기
+		close(conn);
+
+		// 6. 결과 반환
+		return result;
+
+	}
+
+	/**
+	 * id 와 pw가 일치하는 회원의 user_no 조회
+	 * 
+	 * @param userId
+	 * @param userPw
+	 * @return userNo
+	 */
+	public int selectUserNo(String userId, String userPw) throws Exception {
+		Connection conn = getConnection(); // 커넥션 생성
+		// dao 호출 후 결과 반환 받기
+
+		int userNo = dao.selectUser(conn, userId, userPw);
+
+		close(conn); // 커넥션 반환
+
+		return userNo; // 결과반환
+	}
+
+	/**
+	 * userNo가 일치하는 User의 이름 수정 서비스
+	 * 
+	 * @param userName
+	 * @param userNo
+	 * @return result
+	 * @throws Exception
+	 */
+	public int updateName(String userName, int userNo) throws Exception {
+
+		Connection conn = getConnection();
+
+		int result = dao.updateName(conn, userName, userNo);
+
+		// dml 트랜잭션 제어
+		if (result > 0) { //
+			commit(conn);
+
+		} else {
+			rollback(conn);
+		}
+
+		close(conn);
+
+		return result;
+	}
+
+	/**
+	 * 아이디 중복 확인 서비스
+	 * 
+	 * @param userId
+	 * @return count
+	 */
+	public int idcheck(String userId) throws Exception {
+
+		Connection conn = getConnection();
+
+		int count = dao.idcheck(conn, userId);
+
+		close(conn);
+
+		return count;
+	}
+
+	/**
+	 * userList에 있는 모든 user Insert하는 서비스
+	 * 
+	 * @param userList
+	 * @return result : 삽입된 행의 개수
+	 */
+	public int multiInsertUser(List<User> userList) throws Exception {
+
+		Connection conn = getConnection();
+
+		// 다중 INSERT 방법
+		// 1) SQL을 이용한 다중 INSERT
+		// 2) Java 반복문을 이용한 다중 insert (이거 사용!)
+
+		int count = 0; // 삽입 성공한 행의 개수 count
+
+		// 1행씩 삽입
+
+	//	count--;
+		
+		for (User user : userList) {
+			int result = dao.insertUser(conn, user);
+			count+=result; // 삽입 성공한 행의 개수를 count에 누적 
+		}
+		// 트랜잭션 제어처리 
+		// 전체 삽입 성공 시 commit / 아니면 rollback(일부 삽입 , 전체 실패)
+		
+		if(count == userList.size()) {
+			commit(conn);
+		}else {
+			rollback(conn);
+		}
+		
+		close(conn);
+		
+					
+		return count;
+
+	}
 }
