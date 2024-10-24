@@ -34,5 +34,47 @@
  	
  	</entry>
  	
+ 	<!--  할일 상세 조회 -->
+ 	<entry key="todoDetailView">
+ 	SELECT 
+	TODO_NO,
+	TODO_TITLE,
+	TODO_DETAIL,
+	TODO_COMPLETE,
+	TO_CHAR(REG_DATE,'YYYY-MM-DD HH24:MI:SS')REG_DATE 
+	FROM TB_TODO
+	WHERE TODO_NO = ?
+ 	
+ 	</entry>
+ 	
+ 	<!--  완료 여부 변경  
+ 	TODO_COMPLETE 값이 0일 때 1로 변경 
+ 	그 외의 값 (1일때 ) 은 0으로 변경 
+ 	
+ 	TODO_COMPLETE에 저장되는 값이 0또는 1만 가능 (CHECK 제약조건)하기 떄문에
+ 	DECODE(TODO_COMPLETE,0,1,0) 0이라면 1 나머지는 0
+ 	DECODE(TODO_COMPLETE,0,1,1,0) 0이라면 1 1이면 0 으로 변경 
+ 	똑같이 동작함 
+ 	-->
+ 	<entry key ="todoComplete"> 
+ 		UPDATE TB_TODO
+ 		SET TODO_COMPLETE = DECODE(TODO_COMPLETE,0,1,0)
+ 		WHERE TODO_NO =?
+ 	</entry>
+
+
+	<entry key ="todoDelete">
+	DELETE FROM TB_TODO
+	WHERE TODO_NO=?
+		</entry>
+
+
+	<entry key="todoUpdate">
+	UPDATE TB_TODO
+	SET TODO_TITLE=?,
+		TODO_DETAIL=?
+	WHERE TODO_NO=?
+	</entry>
+
 
 </properties>

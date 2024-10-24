@@ -61,7 +61,12 @@
 					<%-- todoNo --%>
 
 					<td>
-						<%-- 제목 --%> <a href="">${todo.title}</a>
+						<%-- 제목 클릭 시 
+						인덱스 번호를 이용하여 todoList 의 
+						인덱스 번째 요소 내용을 조회하기 
+						 --%>
+												
+						 <a href="/todo/detail?todoNo=${todo.todoNo}">${todo.title}</a>
 					</td>
 
 					<%-- 완료 여부 --%>

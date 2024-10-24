@@ -40,23 +40,92 @@ public class TodoListServiceImpl implements TodoListSerivce {
 	}
 
 	@Override
-	public int todoAdd(String title, String detail) throws Exception{
+	public int todoAdd(String title, String detail) throws Exception {
 
 		Connection conn = getConnection();
+
+		int result = dao.todoAdd(conn, title, detail);
+
+		// 트랜잭션 제어처리
+
+		if (result > 0)
+			commit(conn);
+		else
+			rollback(conn);
+
+		close(conn);
+
+		return result;
+
+	}
+
+	@Override
+	public Todo todoDetailView(int todoNo) throws Exception {
+
+		Connection conn = getConnection();
+
+		Todo todo = dao.todoDetailView(conn, todoNo);
+
+		close(conn);
+
+		return todo;
+	}
+
+	@Override
+	public int todoComplete(int todoNo) throws Exception {
+		Connection conn = getConnection();
+		
+		int result= dao.todoComplete(conn,todoNo);
+		
+		if (result > 0)
+			commit(conn);
+		else
+			rollback(conn);
 		
 		
-		int result = dao.todoAdd(conn,title,detail);
+		close(conn);
+
 		
-		//트랜잭션 제어처리
 		
-		if(result>0 )commit(conn);
-		else         rollback(conn);
-	
+		return result;
+	}
+
+	@Override
+	public int todoDelete(int todoNo) throws Exception {
+		Connection conn = getConnection();
+		int result = dao.todoDelete(conn,todoNo);
+		
+		if (result > 0)
+			commit(conn);
+		else
+			rollback(conn);
+		
+		
+		close(conn);
+
+		
+		
+		return result;
+		
+		
+	}
+
+	@Override
+	public int todoUpdate(int todoNo, String title, String detail) throws Exception {
+		Connection conn= getConnection();
+		
+		int result= dao.todoUpdate(conn,todoNo,title,detail);
+
+		if(result>0) {
+			commit(conn);
+		}else {
+			rollback(conn);
+		}
+		
 		close(conn);
 		
 		
 		return result;
-
 	}
 
 }

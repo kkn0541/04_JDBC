@@ -108,29 +108,149 @@ public class TodoListDAOImpl implements TodoListDAO {
 	}
 
 	@Override
-	public int todoAdd(Connection conn, String title, String detail)throws Exception {
+	public int todoAdd(Connection conn, String title, String detail) throws Exception {
 		// 결과 저장용 변수
 		int result = 0;
 
 		try {
-			
-			String sql=prop.getProperty("todoAdd");
-			
-		pstmt=conn.prepareStatement(sql);
-		
-		pstmt.setString(1, title);
-		pstmt.setString(2, detail);
-		
-		result=pstmt.executeUpdate();
-		
-						
 
+			String sql = prop.getProperty("todoAdd");
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, title);
+			pstmt.setString(2, detail);
+
+			result = pstmt.executeUpdate();
+
+		} finally {
+
+			close(pstmt);
+
+		}
+
+		return result;
+	}
+
+	@Override
+	public Todo todoDetailView(Connection conn, int todoNo) throws Exception {
+
+		// 결과저장용 변수 선언
+		Todo todo = null;
+
+		try {
+			//		sql.xml 에 작성한 sql문 의  key(key) 
+			//  entrty 사이의 값 반환 
+			String sql =prop.getProperty("todoDetailView");
+
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, todoNo);
+			
+			
+		
+			rs=pstmt.executeQuery();
+			
+			//todo_no 가 pk이기때문에  값이 하나 아니면 없음 
+			if(rs.next()) {
+				//							rs에 있는 컬럼명
+				boolean complete = rs.getInt("TODO_COMPLETE") ==1;
+				
+				//빌더로 담는거 todo 에 담기  
+				todo = Todo.builder()
+						.todoNo(rs.getInt("TODO_NO"))
+						.title(rs.getString("TODO_TITLE"))
+						.detail(rs.getString("TODO_DETAIL"))
+						.complete(complete)
+						.regDate(rs.getString("REG_DATE"))
+						.build();
+				
+				
+				
+			}
+			
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+
+		return todo;
+	}
+
+	@Override
+	public int todoComplete(Connection conn, int todoNo) throws Exception {
+
+		int result=0;
+		
+		try {
+			
+		String sql = prop.getProperty("todoComplete");
+		pstmt =conn.prepareStatement(sql);
+		pstmt.setInt(1, todoNo);
+		
+		result= pstmt.executeUpdate();
+		
+		
+			
+			
+		} finally {
+		 close(pstmt);
+		}
+		
+		
+		
+		return result;
+	}
+
+	@Override
+	public int todoDelete(Connection conn, int todoNo) throws Exception {
+		
+		int result=0;
+		
+		try {
+			String sql = prop.getProperty("todoDelete");
+			pstmt= conn.prepareStatement(sql);
+			pstmt.setInt(1, todoNo);
+			
+			result=pstmt.executeUpdate();
+			
+			
+			
 		} finally {
 			
 			close(pstmt);
-						
+			
+			
 		}
+		
+		
+		
+		
+		
+		return result;
+	}
 
+	@Override
+	public int todoUpdate(Connection conn, int todoNo, String title, String detail) throws Exception {
+		int result= 0;
+		
+		try {
+			String sql=prop.getProperty("todoUpdate");
+			
+			pstmt=conn.prepareStatement(sql);
+		
+			pstmt.setString(1,title);
+			pstmt.setString(2, detail);
+			pstmt.setInt(3, todoNo);
+			
+			result= pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
 		return result;
 	}
 
